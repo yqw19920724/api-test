@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<body>
+<input id="file-upload" type="file" onchange="getData()">
+<button id="upload-good-btn">创建商品</button>
+<hr>
+<button id="get-good-btn">获取商品</button>
+<hr>
+<input id="delete-id-input" type="text" placeholder="请输入需要删除的商品的ID">
+<button id="delete-good-btn">删除商品</button>
+<hr>
+<input id="update-id-input" type="text" placeholder="请输入需要修改的商品的ID">
+<input id="update-name-input" type="text" placeholder="请输入商品的新名称">
+<input id="update-price-input" type="text" placeholder="请输入商品的价格">
+<button id="update-good-btn">修改商品</button>
+<hr>
+<div id="data-wrap"></div>
+</body>
+<script>
+    $('#get-good-btn').click(function () {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:3000/goods?limit=8",
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                $('#data-wrap').html(JSON.stringify(data))
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $('#update-good-btn').click(function () {
+        var body = {};
+        var id = $('#update-id-input').val();
+        var name = $('#update-name-input').val();
+        var price = $('#update-price-input').val();
+        if(name) {
+            body.name = name
+        }
+        if(price) {
+            body.price = price
+        }
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:3000/goods/" + id,
+            data: body,
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                $('#data-wrap').html(JSON.stringify(data))
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $('#delete-good-btn').click(function () {
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:3000/goods/" + $('#delete-id-input').val(),
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                $('#data-wrap').html(JSON.stringify(data))
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    })
+    
+    $('#upload-good-btn').click(function () {
+        createImg()
+    })
+
+    function createImg() {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/goods",
+            data: {
+                name: '雨伞',
+                price: 20
+            },
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                uploadImg(data._id)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function uploadImg(id) {
+        var file = document.getElementById("file-upload");
+        var formData = new FormData();
+        formData.append('img', file.files[0]);
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/upload/" + id,
+            data: formData,
+            dataType: 'JSON',
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $('#data-wrap').html(JSON.stringify(data))
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+</script>
+</html>
