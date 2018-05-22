@@ -19,6 +19,10 @@
 <hr>
 <input id="add-cart-good" type="text" placeholder="请输入商品ID">
 <button id="add-cart-btn">添加购物车</button>
+<hr>
+<input id="remove-cart-good" type="text" placeholder="请输入商品ID">
+<button id="remove-cart-btn">删除购物车</button>
+<hr>
 </body>
 <script>
     var token;
@@ -86,6 +90,25 @@
         $.ajax({
             type: "POST",
             url: "http://localhost:3000/goods/addCart/" + goodId,
+            headers: {
+                'access-token': token
+            },
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    })
+
+    $('#remove-cart-btn').click(function () {
+        var goodId = $('#remove-cart-good').val()
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/goods/removeCart/" + goodId,
             headers: {
                 'access-token': token
             },
