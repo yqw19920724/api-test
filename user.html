@@ -25,6 +25,17 @@
 <hr>
 <button id="get-cart-btn">获取购物车</button>
 <hr>
+<input id="create-address" type="text" placeholder="请输入地址">
+<button id="create-address-btn">添加地址</button>
+<hr>
+<input id="update-address-id" type="text" placeholder="请输入地址ID">
+<input id="update-address-site" type="text" placeholder="请输入地址">
+<input id="update-address-usage" type="text" placeholder="请输入地址是否使用">
+<button id="update-address-btn">修改地址</button>
+<hr>
+<input id="delete-address-id" type="text" placeholder="请输入地址ID">
+<button id="delete-address-btn">删除地址</button>
+<hr>
 </body>
 <script>
     var token;
@@ -88,7 +99,7 @@
     });
 
     $('#add-cart-btn').click(function () {
-        var goodId = $('#add-cart-good').val()
+        var goodId = $('#add-cart-good').val();
         $.ajax({
             type: "POST",
             url: "http://localhost:3000/goods/addCart/" + goodId,
@@ -109,7 +120,7 @@
     $('#remove-cart-btn').click(function () {
         var goodId = $('#remove-cart-good').val()
         $.ajax({
-            type: "POST",
+            type: "DELETE",
             url: "http://localhost:3000/goods/removeCart/" + goodId,
             headers: {
                 'access-token': token
@@ -129,6 +140,69 @@
         $.ajax({
             type: "GET",
             url: "http://localhost:3000/goods/getCart?limit=2&page=1",
+            headers: {
+                'access-token': token
+            },
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    })
+
+    $('#create-address-btn').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/users/createAddress",
+            headers: {
+                'access-token': token
+            },
+            data: {
+                site: $('#create-address').val()
+            },
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    })
+
+    $('#update-address-btn').click(function () {
+        const addressId = $('#update-address-id').val();
+        $.ajax({
+            type: "PUT",
+            url: "http://localhost:3000/users/updateAddress/" + addressId,
+            headers: {
+                'access-token': token
+            },
+            data: {
+                site: $('#update-address-site').val(),
+                usage: $('#update-address-usage').val()
+            },
+            dataType: 'JSON',
+            processData: "application/json;charset=utf-8",
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    })
+
+    $('#delete-address-btn').click(function () {
+        const addressId = $('#delete-address-id').val();
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:3000/users/deleteAddress/" + addressId,
             headers: {
                 'access-token': token
             },
